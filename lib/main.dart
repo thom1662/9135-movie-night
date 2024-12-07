@@ -3,8 +3,7 @@ import 'package:movie_night_project/screens/welcome.dart';
 import 'package:movie_night_project/utils/app_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  // runApp(const MainApp());
+void main() async {
   runApp(ChangeNotifierProvider(
     create: (context) => AppProvider(),
     child: const MainApp(),
@@ -18,8 +17,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar:  AppBar(
-          title: Text("Movie Night"),
+        appBar: AppBar(
+          title: const Text("Movie Night"),
         ),
         body: const Welcome(),
       ),
