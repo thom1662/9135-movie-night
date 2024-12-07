@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:movie_night_project/utils/http_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_night_project/utils/app_provider.dart';
+import 'package:movie_night_project/screens/movies_screen.dart';
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({super.key});
@@ -24,11 +25,11 @@ class _JoinScreenState extends State<JoinScreen> {
     try {
       final response = await HttpHelper.joinSession(deviceID, code);
       String sessionId = response['data']['session_id'];
-
 //save session id to provider
       Provider.of<AppProvider>(context, listen: false).setSessionID(sessionId);
-
-//nav to movie selection
+//nav to movie selection screen
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const MoviesScreen()));
     } catch (err) {
       showDialog(
           context: context,
