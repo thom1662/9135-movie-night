@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_night_project/screens/code_screen.dart';
+import 'package:movie_night_project/screens/join_screen.dart';
 import 'package:movie_night_project/utils/app_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,20 +25,25 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Movie Night")),
         body: Center(
             child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CodeScreen()));
-                },
-                child: const Text("Start"))
-          ],
-        )));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CodeScreen()));
+            },
+            child: const Text("Start new session")),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const JoinScreen()));
+          },
+          child: const Text("Join with a code"),
+        )
+      ],
+    )));
   }
 
   Future<void> initDeviceID() async {
@@ -64,7 +70,7 @@ class _WelcomeState extends State<Welcome> {
     } on Exception catch (e) {
       deviceID = 'error: $e';
     }
-    if (kDebugMode){
+    if (kDebugMode) {
       print('device id: $deviceID');
     }
     return deviceID;
