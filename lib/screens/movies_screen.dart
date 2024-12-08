@@ -29,6 +29,19 @@ class _MoviesScreenState extends State<MoviesScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _clearMovies();
+  }
+
+  void _clearMovies() {
+    _movies.clear();
+    _currentIndex = 0;
+    _page = 1;
+  }
+  //reset everything if user leaves screen
+
   void _logSessionAndDeviceID() {
     String? deviceID =
         Provider.of<AppProvider>(context, listen: false).deviceID;
@@ -55,11 +68,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
         var data = jsonDecode(response.body);
         setState(() {
           _movies.addAll(List<Map<String, dynamic>>.from(data['results']));
-          _page++; //increment the page for next fetch
+          _page++; //increment the page for next fetch??
         });
-        if (kDebugMode) {
-          print('Movies array: $_movies');
-        }
       } else {
         throw Exception('Failed to fetch movies: ${response.reasonPhrase}');
       }
@@ -75,8 +85,13 @@ class _MoviesScreenState extends State<MoviesScreen> {
         Provider.of<AppProvider>(context, listen: false).sessionID;
     try {
       final response = await HttpHelper.voteMovie(sessionId, movieId, vote);
-      if (response['match'] == true) {
-        _showMatchDialog(response['movie_id']);
+      print(response);
+
+      if (response['data']['match'] == true &&
+          response['data']['num_devices'] > 1) {
+        int matchedMovieId = int.parse(response['data']['movie_id'].toString());
+        print('Match found for movie ID: matchedMovieId');
+        _showMatchDialog(matchedMovieId);
       } else {
         _showNextMovie();
       }
@@ -86,6 +101,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   void _showMatchDialog(int movieId) {
+    print('Showing match dialog for movie ID: $movieId');
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -104,12 +120,14 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   void _showNextMovie() {
-    setState(() {
-      _currentIndex++;
-      if (_currentIndex >= _movies.length) {
-        _fetchMovieList();
-      }
-    });
+    if (mounted) {
+      setState(() {
+        _currentIndex++;
+        if (_currentIndex >= _movies.length) {
+          _fetchMovieList();
+        }
+      });
+    }
   }
 
   @override
@@ -128,7 +146,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
     final currentMovie = _movies[_currentIndex];
     return Scaffold(
       appBar: AppBar(
-        title: Text("Movie Night"),
+        title: const Text("Movie Night"),
       ),
       body: Center(
           child: Dismissible(

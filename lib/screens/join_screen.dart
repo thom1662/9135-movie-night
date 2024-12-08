@@ -59,21 +59,25 @@ class _JoinScreenState extends State<JoinScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text("Enter the code to join a session"),
-            TextField(
-              controller: _codeController,
-              maxLength: 4,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _codeController,
+                maxLength: 4,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                autofocus: true,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 24),
+                decoration: const InputDecoration(
+                  constraints: BoxConstraints(maxWidth: 200),
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: _joinSession,
-              child: const Text("Join session"),
-            ),
-            Consumer<AppProvider>(
-              builder: (context, appProvider, child) {
-                return Text(
-                    'Session ID: ${appProvider.sessionID ?? "Not set"}');
-              },
+              // style: ,
+              child: const Text("Join"),
             ),
           ],
         ),
