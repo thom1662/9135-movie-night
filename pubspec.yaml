@@ -25,3 +25,6 @@ flutter:
     - family: DMSans
       fonts:
         - asset: assets/fonts/DMSans.ttf
+  assets:
+    - assets/images/popcorn.png
+    

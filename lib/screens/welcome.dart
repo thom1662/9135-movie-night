@@ -29,18 +29,39 @@ class _WelcomeState extends State<Welcome> {
             child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const Image(
+          image: AssetImage('assets/images/popcorn.png'),
+          fit: BoxFit.cover,
+          height: 200,
+        ),
+        const SizedBox(height: 40),
         ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const CodeScreen()));
             },
-            child: const Text("Start new session")),
+            child: Text("Start new session",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 18,
+                ))),
+        const SizedBox(height: 32),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const JoinScreen()));
           },
-          child: const Text("Join with a code"),
+          child: Text("Join with a code",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontSize: 18,
+              )),
         )
       ],
     )));

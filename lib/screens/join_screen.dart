@@ -14,11 +14,12 @@ class JoinScreen extends StatefulWidget {
 
 class _JoinScreenState extends State<JoinScreen> {
   final TextEditingController _codeController = TextEditingController();
+  bool _buttonEnabled = false;
 
 //called by button press
   void _joinSession() async {
     String codeInput = _codeController.text;
-    int code = int.parse(codeInput);
+    int code = codeInput.isNotEmpty ? int.parse(codeInput) : 0;
     String? deviceID =
         Provider.of<AppProvider>(context, listen: false).deviceID;
 
@@ -60,7 +61,7 @@ class _JoinScreenState extends State<JoinScreen> {
           children: [
             const Text("Enter the code to join a session"),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(32),
               child: TextField(
                 controller: _codeController,
                 maxLength: 4,
@@ -72,12 +73,28 @@ class _JoinScreenState extends State<JoinScreen> {
                 decoration: const InputDecoration(
                   constraints: BoxConstraints(maxWidth: 200),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _buttonEnabled = value.length == 4;
+                  });
+                },
               ),
             ),
-            ElevatedButton(
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _buttonEnabled
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey,
+              ),
               onPressed: _joinSession,
               // style: ,
-              child: const Text("Join"),
+              label: Text("Start selecting movies",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 18,
+                  )),
+              iconAlignment: IconAlignment.end,
+              icon: const Icon(Icons.arrow_right_alt, color: Colors.white),
             ),
           ],
         ),

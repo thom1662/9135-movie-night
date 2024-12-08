@@ -24,7 +24,8 @@ class _CodeScreenState extends State<CodeScreen> {
 
   void _startSession() async {
     //how to get device id from anywhere:
-    String? deviceID = Provider.of<AppProvider>(context, listen: false).deviceID;
+    String? deviceID =
+        Provider.of<AppProvider>(context, listen: false).deviceID;
 
     final response = await HttpHelper.startSession(deviceID);
     setState(() {
@@ -32,7 +33,7 @@ class _CodeScreenState extends State<CodeScreen> {
       sessionId = response['data']['session_id'];
     });
     //set session in provider
-      Provider.of<AppProvider>(context, listen: false).setSessionID(sessionId);
+    Provider.of<AppProvider>(context, listen: false).setSessionID(sessionId);
 
     if (kDebugMode) {
       print('code from start session: $code');
@@ -40,29 +41,44 @@ class _CodeScreenState extends State<CodeScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
 //put main scaffold on main.dart, title only here
     return Scaffold(
         appBar: AppBar(
-          title: Text("your code"),
+          title: const Text("Start a Session"),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("share this code: $code"),
-              ElevatedButton(
+              const Text("share this code with a friend:"),
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Text(code,
+                    style: const TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.bold)),
+              ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const MoviesScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MoviesScreen()));
                 },
-                child: const Text("Start selecting movies"),
+                label: Text("Start selecting movies",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 18,
+                    )),
+                iconAlignment: IconAlignment.end,
+                icon: const Icon(Icons.arrow_right_alt, color: Colors.white),
               )
             ],
           ),
         ));
   }
-
 }
