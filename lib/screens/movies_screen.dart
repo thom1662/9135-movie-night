@@ -23,10 +23,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
   void initState() {
     super.initState();
     _fetchMovieList();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _logSessionAndDeviceID();
-    });
   }
 
   @override
@@ -40,21 +36,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
     _currentIndex = 0;
     _page = 1;
   }
-  //reset everything if user leaves screen
-
-  void _logSessionAndDeviceID() {
-    String? deviceID =
-        Provider.of<AppProvider>(context, listen: false).deviceID;
-    String? sessionID =
-        Provider.of<AppProvider>(context, listen: false).sessionID;
-
-    if (deviceID != null && sessionID != null) {
-      debugPrint('Device ID movie page: $deviceID');
-      debugPrint('Session ID movie page: $sessionID');
-    } else {
-      debugPrint('Device ID or Session ID is not set');
-    }
-  }
+  //reset everything if user leaves screen -- still need??
 
   _fetchMovieList() async {
     String? key = Config.apiKey;
@@ -68,7 +50,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
         var data = jsonDecode(response.body);
         setState(() {
           _movies.addAll(List<Map<String, dynamic>>.from(data['results']));
-          _page++; //increment the page for next fetch??
+          _page++; //increment the page for next fetch
         });
       } else {
         throw Exception('Failed to fetch movies: ${response.reasonPhrase}');
@@ -90,7 +72,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
       if (response['data']['match'] == true &&
           response['data']['num_devices'] > 1) {
         int matchedMovieId = int.parse(response['data']['movie_id'].toString());
-        print('Match found for movie ID: matchedMovieId');
         _showMatchDialog(matchedMovieId);
       } else {
         _showNextMovie();
@@ -101,7 +82,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   void _showMatchDialog(int movieId) {
-    print('Showing match dialog for movie ID: $movieId');
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -122,19 +102,15 @@ class _MoviesScreenState extends State<MoviesScreen> {
   void _showNextMovie() {
     if (mounted) {
       if (_currentIndex >= _movies.length - 1) {
-        debugPrint('Fetching more movies...');
+        //fetch next movies at index 19
         _fetchMovieList().then((_) {
           setState(() {
             _currentIndex++;
-            debugPrint(
-                'Current index after fetch: $_currentIndex, Movies length: ${_movies.length}');
           });
         });
       } else {
         setState(() {
           _currentIndex++;
-          debugPrint(
-              'Current index: $_currentIndex, Movies length: ${_movies.length}');
         });
       }
     }
@@ -204,5 +180,3 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 }
-
-//have session and device id here
