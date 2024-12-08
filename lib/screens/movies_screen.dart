@@ -121,12 +121,22 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   void _showNextMovie() {
     if (mounted) {
-      setState(() {
-        _currentIndex++;
-        if (_currentIndex >= _movies.length) {
-          _fetchMovieList();
-        }
-      });
+      if (_currentIndex >= _movies.length - 1) {
+        debugPrint('Fetching more movies...');
+        _fetchMovieList().then((_) {
+          setState(() {
+            _currentIndex++;
+            debugPrint(
+                'Current index after fetch: $_currentIndex, Movies length: ${_movies.length}');
+          });
+        });
+      } else {
+        setState(() {
+          _currentIndex++;
+          debugPrint(
+              'Current index: $_currentIndex, Movies length: ${_movies.length}');
+        });
+      }
     }
   }
 
