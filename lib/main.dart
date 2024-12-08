@@ -16,6 +16,21 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'DMSans',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepOrange,
+          brightness: Brightness.light,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange,
+            brightness: Brightness.light,
+          ).primary,
+          foregroundColor: Colors.white,
+        ),
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Movie Night"),
