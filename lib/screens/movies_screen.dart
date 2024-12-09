@@ -67,7 +67,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
         Provider.of<AppProvider>(context, listen: false).sessionID;
     try {
       final response = await HttpHelper.voteMovie(sessionId, movieId, vote);
-      print(response);
+      // print(response);
 
       if (response['data']['match'] == true &&
           response['data']['num_devices'] > 1) {
@@ -132,51 +132,84 @@ class _MoviesScreenState extends State<MoviesScreen> {
     final currentMovie = _movies[_currentIndex];
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Movie Night"),
+        title: const Text("Currently in Theatres"),
       ),
-      body: Center(
-          child: Dismissible(
-              key: Key(currentMovie['id'].toString()),
-              direction: DismissDirection.horizontal,
-              onDismissed: (direction) {
-                bool vote;
-                if (direction == DismissDirection.startToEnd) {
-                  vote = true; // Swiped right
-                } else if (direction == DismissDirection.endToStart) {
-                  vote = false; // Swiped left
-                } else {
-                  vote =
-                      false; // just in case, should not happen in horizontal direction
-                }
-                _voteMovie(currentMovie['id'], vote);
-              },
-              background: Container(
-                color: Colors.green,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Icon(Icons.thumb_up, color: Colors.white),
-              ),
-              secondaryBackground: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Icon(Icons.thumb_down, color: Colors.white),
-              ),
-              child: Card(
-                child: Column(
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network(
-                        'https://image.tmdb.org/t/p/w185${currentMovie['poster_path']}'),
-                    ListTile(
-                      title: Text(currentMovie['title']),
-                      // subtitle: Text(currentMovie['overview']),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+              child: Dismissible(
+                  key: Key(currentMovie['id'].toString()),
+                  direction: DismissDirection.horizontal,
+                  onDismissed: (direction) {
+                    bool vote;
+                    if (direction == DismissDirection.startToEnd) {
+                      vote = true; // Swiped right
+                    } else if (direction == DismissDirection.endToStart) {
+                      vote = false; // Swiped left
+                    } else {
+                      vote =
+                          false; // just in case, should not happen in horizontal direction
+                    }
+                    _voteMovie(currentMovie['id'], vote);
+                  },
+                  background: Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(
+                      Icons.thumb_up,
+                      color: Colors.green,
+                      size: 60,
                     ),
-                    Text('Release Date: ${currentMovie['release_date']}'),
-                    Text('Rating: ${currentMovie['vote_average']}'),
-                  ],
-                ),
-              ))),
+                  ),
+                  secondaryBackground: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(
+                      Icons.thumb_down,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                  ),
+                  child: Card(
+                    color: Theme.of(context).colorScheme.secondary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        children: [
+                          if (currentMovie['poster_path'] != null)
+                            Image.network(
+                              'https://image.tmdb.org/t/p/w500${currentMovie['poster_path']}',
+                              width: 250,
+                            )
+                          else
+                            Image.asset('assets/images/default_poster.png',
+                                width: 250),
+                          const SizedBox(height: 16),
+                          Text(currentMovie['title'],
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondary)),
+                          Text('Release Date: ${currentMovie['release_date']}',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondary)),
+                          Text(
+                              'Rating: ${currentMovie['vote_average'].toStringAsFixed(1)}',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondary)),
+                        ],
+                      ),
+                    ),
+                  ))),
+        ],
+      ),
     );
   }
 }

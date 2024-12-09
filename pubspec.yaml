@@ -27,4 +27,5 @@ flutter:
         - asset: assets/fonts/DMSans.ttf
   assets:
     - assets/images/popcorn.png
+    - assets/images/default_poster.png
     
