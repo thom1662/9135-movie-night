@@ -36,7 +36,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
     _currentIndex = 0;
     _page = 1;
   }
-  //reset everything if user leaves screen -- still need??
 
   _fetchMovieList() async {
     String? key = Config.apiKey;
@@ -82,17 +81,36 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   void _showMatchDialog(int movieId) {
+    final currentMovie = _movies[_currentIndex];
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Match Found!'),
-        content: Text('Your movie match: $movieId'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (currentMovie['poster_path'] != null)
+              Image.network(
+                'https://image.tmdb.org/t/p/w500${currentMovie['poster_path']}',
+                width: 250,
+              )
+            else
+              Image.asset('assets/images/default_poster.png', width: 250),
+            const SizedBox(height: 16),
+            Text(currentMovie['title'],
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             },
-            child: const Text('OK'),
+            child: const Text('Back Home',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
           ),
         ],
       ),
